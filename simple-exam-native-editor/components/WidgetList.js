@@ -44,11 +44,39 @@ class WidgetList extends Component {
       });
   }
 
-  addAssignment() {
-
+  addAssignment(lessonId) {
+    return fetch("http://fast-ocean-68598.herokuapp.com/api/lesson/"+lessonId+"/assignment",
+      {
+        headers: {"content-type": "application/json"},
+        method: "POST",
+        body: JSON.stringify({
+          title: "new assignment",
+          points: 0,
+          description: "Description for new assignment"
+        })
+      })
+      .then((response) => response.json())
+      .then((assignment) => this.setState({
+        assignments: [...this.state.assignments, assignment]
+      }));
   }
-  addExam() {
 
+  addExam(lessonId) {
+    return fetch("http://fast-ocean-68598.herokuapp.com/api/lesson/"+lessonId+"/exam",
+      {
+        headers: {"content-type": "application/json"},
+        method: "POST",
+        body: JSON.stringify({
+          "title": "new exam",
+          "points": 0,
+          "description": "Description for new exam",
+          "questions": []
+        })
+      })
+      .then((response) => response.json())
+      .then((exam) => this.setState({
+        exams: [...this.state.exams, exam]
+      }));
   }
 
   render() {
@@ -86,10 +114,10 @@ class WidgetList extends Component {
 
         <Button title="new assignment"
                 backgroundColor="green"
-                onPress={this.addAssignment}/>
+                onPress={() => this.addAssignment(this.state.lessonId)}/>
         <Button title="new exam"
                 backgroundColor="green"
-                onPress={this.addExam}/>
+                onPress={() => this.addExam(this.state.lessonId)}/>
       </View>
     )
   }
