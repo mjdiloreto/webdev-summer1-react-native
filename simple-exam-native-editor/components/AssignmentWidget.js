@@ -4,6 +4,8 @@ import {Text, ListItem, Button, FormInput, FormLabel} from 'react-native-element
 
 import {TitlePointsDescription} from "../elements/TitlePointsDescription";
 import {TitlePointsDescriptionPreview} from "../elements/TitlePointsDescriptionPreview";
+import {PreviewButton} from '../elements/PreviewButton'
+import {SaveCancelButtons} from '../elements/SaveCancelButtons'
 
 class AssignmentWidget extends Component {
     static navigationOptions = {title: 'Assignment Editor'}
@@ -22,73 +24,59 @@ class AssignmentWidget extends Component {
         this.updateForm = this.updateForm.bind(this);
     }
 
-  updateForm(newState) {
+  updateForm = (newState) => {
     this.setState(newState);
   }
 
-  saveForm() {
-      let newAssignment = this.state.assignment;
-      newAssignment.title = this.state.title;
-      newAssignment.description = this.state.description;
-      newAssignment.points = this.state.points;
+  saveForm = () => {
+    this.state.assignment.title = this.state.title;
+    this.state.assignment.description = this.state.description;
+    this.state.assignment.points = this.state.points;
 
-      fetch('http://fast-ocean-68598.herokuapp.com/api/lesson/'+this.state.lessonId+'assignment',
+      fetch('http://fast-ocean-68598.herokuapp.com/api/assignment/'+this.state.assignment.id,
         {
           method: 'put',
-          body: JSON.stringify(newAssignment),
+          body: JSON.stringify(this.state.assignment),
           headers: {
             'content-type': 'application/json'}
         }).then(() => this.props.navigation.goBack())
   }
 
-    render() {
-      const prevButton = () => (
-        <Button title="Preview"
-                onPress={
-                  () => {
-                    this.updateForm({preview: !this.state.preview})
-                  }
-                }/>
-      )
+  cancel = () => {
+      this.props.navigation.goBack();
+  }
 
-      const saveCancelButton = () => (
-        <View style={{flexDirection:"row"}}>
-          <View style={{flex:1}}>
-            <Button	backgroundColor="green"
-                     color="white"
-                     title="Save"
-                     onPress={this.saveForm}/>
-          </View>
-          <View style={{flex:1}}>
-            <Button	backgroundColor="red"
-                     color="white"
-                     title="Cancel"/>
-          </View>
-        </View>
-      )
+    render() {
+
 
       if(this.state.preview) {
         return (
           <ScrollView>
-            {prevButton()}
+            <View style={{padding: 15}}>
+              <PreviewButton
+                preview={this.state.preview}
+                updateForm ={this.updateForm.bind(this)}/>
 
-            <TitlePointsDescription
-              title={this.state.title}
-              points={this.state.points}
-              description={this.state.description}/>
+              <TitlePointsDescription
+                title={this.state.title}
+                points={this.state.points}
+                description={this.state.description}/>
 
-            <FormLabel>Essay Answer</FormLabel>
-            <TextInput style={{padding: 15}}
-                       multiline={true}
-                       numberOfLines={4}/>
+              <FormLabel>Essay Answer</FormLabel>
+              <TextInput style={{padding: 15}}
+                         multiline={true}
+                         numberOfLines={4}/>
 
-            <FormLabel>Upload a file</FormLabel>
-            <Button title="Choose File"/>
+              <FormLabel>Upload a file</FormLabel>
+              <Button title="Choose File"/>
 
-            <FormLabel>Submit a link</FormLabel>
-            <FormInput/>
+              <FormLabel>Submit a link</FormLabel>
+              <FormInput/>
 
-            {saveCancelButton()}
+              <SaveCancelButtons
+                save={this.saveForm.bind(this)}
+                cancel={this.cancel.bind(this)}/>
+            </View>
           </ScrollView>
         )
       } else {
@@ -96,16 +84,21 @@ class AssignmentWidget extends Component {
           <ScrollView>
             <View style={{padding: 15}}>
 
-              {prevButton()}
+              <PreviewButton
+                preview={this.state.preview}
+                updateForm={this.updateForm.bind(this)}/>
+
 
               <TitlePointsDescriptionPreview
                 title={this.state.title}
-                points={this.state.points}
+                points={"" + this.state.points}
                 description={this.state.description}
                 updateForm={this.updateForm.bind(this)}/>
             </View>
 
-            {saveCancelButton()}
+            <SaveCancelButtons
+              save={this.saveForm.bind(this)}
+              cancel={this.cancel.bind(this)}/>
           </ScrollView>
         )
       }

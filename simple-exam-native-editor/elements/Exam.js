@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {View} from 'react-native'
 import {ListItem, Text} from 'react-native-elements'
 import {TitlePointsDescription} from "./TitlePointsDescription";
+import {TitlePointsDescriptionPreview} from "./TitlePointsDescriptionPreview";
 
 export default class Exam extends Component {
   static navigationOptions = {title: 'Exam'}
@@ -63,10 +64,17 @@ export default class Exam extends Component {
   render() {
     return(
       <View style={{padding: 15}}>
-        <TitlePointsDescription
+
+        {this.state.preview && <TitlePointsDescription
           title={this.state.exam.title}
           points={this.state.exam.points}
-          description={this.state.exam.description}/>
+          description={this.state.exam.description}/>}
+
+        {!this.state.preview && <TitlePointsDescriptionPreview
+          title={this.state.exam.title}
+          points={this.state.exam.points}
+          description={this.state.exam.description}
+          updateForm={this.updateForm.bind(this)}/>}
 
         {this.state.questions.map( (question, index) => (
           <ListItem
