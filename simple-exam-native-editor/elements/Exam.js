@@ -24,8 +24,40 @@ export default class Exam extends Component {
   }
 
   navToQuestion(question) {
-    console.log("going to question")
-    console.log(question)
+    let navigation = this.props.navigation;
+
+    switch (question.type) {
+      case "Essay":
+        navigation.navigate("EssayQuestionEditor", {
+          question: question,
+          exam: this.state.exam
+        });
+        break;
+
+      case "Blanks":
+        navigation.navigate("FillInTheBlanksQuestionEditor", {
+          question: question,
+          exam: this.state.exam
+        });
+        break;
+
+      case "Truefalse":
+        navigation.navigate("TrueFalseQuestionEditor", {
+          question: question,
+          exam: this.state.exam
+        });
+        break;
+
+      case "Choice":
+        navigation.navigate("MultipleChoiceQuestionEditor", {
+          question: question,
+          exam: this.state.exam
+        });
+        break;
+
+      default:
+        return;
+    }
   }
 
   render() {
@@ -40,7 +72,7 @@ export default class Exam extends Component {
           <ListItem
             key={index}
             title={question.title}
-            onPress={this.navToQuestion(question)}/>
+            onPress={() => this.navToQuestion(question)}/>
         ))}
       </View>
     )

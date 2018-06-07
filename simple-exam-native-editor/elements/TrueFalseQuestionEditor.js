@@ -3,39 +3,36 @@ import {View} from 'react-native'
 import {Text, Button, CheckBox} from 'react-native-elements'
 import {FormLabel, FormInput, FormValidationMessage}
   from 'react-native-elements'
+import {TitlePointsDescriptionPreview} from "./TitlePointsDescriptionPreview";
 
 class TrueFalseQuestionEditor extends React.Component {
   static navigationOptions = { title: "True False"}
   constructor(props) {
     super(props)
+
+    let question = this.props.navigation.getParam("question");
     this.state = {
-      title: '',
-      description: '',
-      points: 0,
-      isTrue: true
+      question: question,
+      title: question.title,
+      description: question.description,
+      points: question.points,
+      isTrue: question.isTrue,
+      exam: this.props.navigation.getParam("exam")
     }
   }
+
   updateForm(newState) {
     this.setState(newState)
   }
+
   render() {
     return(
       <View>
-        <FormLabel>Title</FormLabel>
-        <FormInput onChangeText={
-          text => this.updateForm({title: text})
-        }/>
-        <FormValidationMessage>
-          Title is required
-        </FormValidationMessage>
-
-        <FormLabel>Description</FormLabel>
-        <FormInput onChangeText={
-          text => this.updateForm({description: text})
-        }/>
-        <FormValidationMessage>
-          Description is required
-        </FormValidationMessage>
+        <TitlePointsDescriptionPreview
+          title={this.state.title}
+          points={this.state.points}
+          description={this.state.description}
+          updateForm={this.updateForm.bind(this)}/>
 
         <CheckBox onPress={() => this.updateForm({isTrue: !this.state.isTrue})}
                   checked={this.state.isTrue} title='The answer is true'/>
