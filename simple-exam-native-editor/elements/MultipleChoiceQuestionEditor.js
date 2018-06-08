@@ -30,7 +30,18 @@ class MultipleChoiceQuestionEditor extends React.Component {
   }
 
   save = () => {
+    this.state.question.title = this.state.title;
+    this.state.question.description = this.state.description;
+    this.state.question.points = this.state.points;
+    this.state.question.choices = this.state.choices;
 
+    fetch('http://fast-ocean-68598.herokuapp.com/api/choice/'+this.state.question.id,
+      {
+        method: 'put',
+        body: JSON.stringify(this.state.question),
+        headers: {
+          'content-type': 'application/json'}
+      }).then(() => this.props.navigation.goBack())
   }
 
   cancel = () => {
@@ -68,7 +79,7 @@ class MultipleChoiceQuestionEditor extends React.Component {
           <FormInput
             value={"" + this.state.choices.split("\\n")}
             onChangeText={
-            text => this.updateForm({choices: text})
+            text => this.updateForm({choices: text.split(",").join("\\n")})
           }/>
         </View>}
 

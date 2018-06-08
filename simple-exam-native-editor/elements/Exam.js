@@ -30,7 +30,7 @@ const newEssay = {
   "type": "Essay"
 }
 
-const newTruefalse = {
+const newTrueFalse = {
   "title": "New True False",
   "description": "Description for True False",
   "points": 0,
@@ -82,7 +82,7 @@ export default class Exam extends Component {
         });
         break;
 
-      case "Truefalse":
+      case "TrueFalse":
         navigation.navigate("TrueFalseQuestionEditor", {
           question: question,
           exam: this.state.exam
@@ -131,7 +131,7 @@ export default class Exam extends Component {
         newQuestion = newEssay;
         break;
       case "truefalse":
-        newQuestion = newTruefalse;
+        newQuestion = newTrueFalse;
         break;
       case "choice":
         newQuestion = newChoice;

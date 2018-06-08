@@ -30,7 +30,18 @@ class TrueFalseQuestionEditor extends React.Component {
   }
 
   save = () => {
+    this.state.question.title = this.state.title;
+    this.state.question.description = this.state.description;
+    this.state.question.points = this.state.points;
+    this.state.question.isTrue = this.state.isTrue;
 
+    fetch('http://fast-ocean-68598.herokuapp.com/api/truefalse/'+this.state.question.id,
+      {
+        method: 'put',
+        body: JSON.stringify(this.state.question),
+        headers: {
+          'content-type': 'application/json'}
+      }).then(() => this.props.navigation.goBack())
   }
 
   cancel = () => {
