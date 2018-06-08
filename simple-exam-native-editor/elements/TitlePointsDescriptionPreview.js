@@ -13,12 +13,13 @@ export const TitlePointsDescriptionPreview = ({title, points, description, updat
 
       <FormLabel>Points</FormLabel>
       <FormInput
-        value={points}
+        value={"" + points}
         onChangeText={text => updateForm({points: text})
         }/>
 
       <FormLabel>Description</FormLabel>
       <TextInput
+        style={{padding: 15}}
         multiline={true}
         numberOfLines={4}
         value={description}

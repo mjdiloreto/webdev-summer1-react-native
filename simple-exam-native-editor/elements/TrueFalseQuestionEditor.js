@@ -4,6 +4,9 @@ import {Text, Button, CheckBox} from 'react-native-elements'
 import {FormLabel, FormInput, FormValidationMessage}
   from 'react-native-elements'
 import {TitlePointsDescriptionPreview} from "./TitlePointsDescriptionPreview";
+import {TitlePointsDescription} from "./TitlePointsDescription";
+import {PreviewButton} from "./PreviewButton";
+import {SaveCancelButtons} from "./SaveCancelButtons";
 
 class TrueFalseQuestionEditor extends React.Component {
   static navigationOptions = { title: "True False"}
@@ -17,7 +20,8 @@ class TrueFalseQuestionEditor extends React.Component {
       description: question.description,
       points: question.points,
       isTrue: question.isTrue,
-      exam: this.props.navigation.getParam("exam")
+      exam: this.props.navigation.getParam("exam"),
+      preview: false
     }
   }
 
@@ -25,28 +29,43 @@ class TrueFalseQuestionEditor extends React.Component {
     this.setState(newState)
   }
 
+  save = () => {
+
+  }
+
+  cancel = () => {
+    this.props.navigation.goBack();
+  }
+
   render() {
     return(
       <View>
-        <TitlePointsDescriptionPreview
-          title={this.state.title}
-          points={this.state.points}
-          description={this.state.description}
-          updateForm={this.updateForm.bind(this)}/>
+        <PreviewButton updateForm = {this.updateForm.bind(this)}
+          preview={this.state.preview}/>
 
-        <CheckBox onPress={() => this.updateForm({isTrue: !this.state.isTrue})}
-                  checked={this.state.isTrue} title='The answer is true'/>
+        {this.state.preview &&
+        <View>
+          <TitlePointsDescription
+            title={this.state.title}
+            points={this.state.points}
+            description={this.state.description}/>
+          <CheckBox title='the answer is true'/>
+        </View>}
 
-        <Button	backgroundColor="green"
-                 color="white"
-                 title="Save"/>
-        <Button	backgroundColor="red"
-                 color="white"
-                 title="Cancel"/>
 
-        <Text h3>Preview</Text>
-        <Text h2>{this.state.title}</Text>
-        <Text>{this.state.description}</Text>
+        {!this.state.preview &&
+        <View>
+            <TitlePointsDescriptionPreview
+              title={this.state.title}
+              points={this.state.points}
+              description={this.state.description}
+              updateForm={this.updateForm.bind(this)}/>
+            <CheckBox onPress={() => this.updateForm({isTrue: !this.state.isTrue})}
+              checked={this.state.isTrue} title='The answer is true'/>
+        </View>}
+
+        <SaveCancelButtons save={this.save.bind(this)}
+          cancel={this.cancel.bind(this)}/>
 
       </View>
     )

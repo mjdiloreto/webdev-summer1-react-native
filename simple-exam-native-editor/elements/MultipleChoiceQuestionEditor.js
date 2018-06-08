@@ -1,57 +1,80 @@
 import React from 'react'
-import {View} from 'react-native'
-import {Text, Button, CheckBox} from 'react-native-elements'
-import {FormLabel, FormInput, FormValidationMessage}
-  from 'react-native-elements'
+import {View, Picker} from 'react-native'
+import {FormLabel, FormInput} from 'react-native-elements'
+import {TitlePointsDescription} from "./TitlePointsDescription";
+import {PreviewButton} from "./PreviewButton";
+import {TitlePointsDescriptionPreview} from "./TitlePointsDescriptionPreview";
+import {SaveCancelButtons} from "./SaveCancelButtons";
+import OptionButtonGroup from "./OptionButtonGroup";
 
 class MultipleChoiceQuestionEditor extends React.Component {
   static navigationOptions = { title: "Multiple Choice"}
   constructor(props) {
     super(props)
+
+    let question = this.props.navigation.getParam("question");
+
     this.state = {
-      title: '',
-      description: '',
-      points: 0,
-      options: ''
+      question: question,
+      exam: this.props.navigation.getParam("exam"),
+      title: question.title,
+      description: question.description,
+      points: question.points,
+      choices: question.choices,
+      selectedChoice: 0,
+      preview: false
     }
   }
   updateForm(newState) {
     this.setState(newState)
   }
+
+  save = () => {
+
+  }
+
+  cancel = () => {
+    this.props.navigation.goBack();
+  }
+
   render() {
     return(
       <View>
-        <FormLabel>Title</FormLabel>
-        <FormInput onChangeText={
-          text => this.updateForm({title: text})
-        }/>
-        <FormValidationMessage>
-          Title is required
-        </FormValidationMessage>
 
-        <FormLabel>Description</FormLabel>
-        <FormInput onChangeText={
-          text => this.updateForm({description: text})
-        }/>
-        <FormValidationMessage>
-          Description is required
-        </FormValidationMessage>
+        <PreviewButton
+          updateForm={this.updateForm.bind(this)}
+          preview={this.state.preview}/>
 
-        <FormLabel>Choices</FormLabel>
-        <FormInput onChangeText={
-          text => this.updateForm({options: text})
-        }/>
+        {this.state.preview &&
+        <View>
+          <TitlePointsDescription
+            title={this.state.title}
+            points={this.state.points}
+            description={this.state.description}/>
 
-        <Button	backgroundColor="green"
-                 color="white"
-                 title="Save"/>
-        <Button	backgroundColor="red"
-                 color="white"
-                 title="Cancel"/>
+          <OptionButtonGroup
+            options={this.state.choices.split("\\n")}/>
+        </View>}
 
-        <Text h3>Preview</Text>
-        <Text h2>{this.state.title}</Text>
-        <Text>{this.state.description}</Text>
+        {!this.state.preview &&
+        <View>
+          <TitlePointsDescriptionPreview
+          title={this.state.title}
+          points={this.state.points}
+          description={this.state.description}
+          updateForm={this.updateForm.bind(this)}/>
+
+          <FormLabel>Choices</FormLabel>
+          <FormInput
+            value={"" + this.state.choices.split("\\n")}
+            onChangeText={
+            text => this.updateForm({choices: text})
+          }/>
+        </View>}
+
+        <SaveCancelButtons
+          save={this.save.bind(this)}
+          cancel={this.cancel.bind(this)}/>
 
       </View>
     )
